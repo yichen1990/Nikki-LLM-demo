@@ -278,14 +278,33 @@ This demonstrates:
 - Local RAG retrieval
 - Citation-aware generation
 
-## Case output
+### Case output
 <details>
 <summary><strong>Case 1 — General QA (ALLOW)</strong></summary>
 <br>
+
+[Output_example/Case_1](Output_example/Case_1)
+
+#### Folder Structure
+```
+Case_1/
+├── answer.md
+├── answer.pdf
+├── answer.json
+├── intent.json
+├── retrieval.json
+└── triage.json
+```
+#### terminal output
+
 <img src="Output_example/Case_1/Case 1 terminal output.png" width="700">
 <br>
 
-[Click to see generated PDF](Output_example/Case_1/answer.pdf)
+[Generated Answer in PDF](Output_example/Case_1/answer.pdf)
+<br>
+
+[Generated Answer in JSON](Output_example/Case_1/answer.JSON)
+
 
 </details>
 
