@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 from datetime import datetime
 from pathlib import Path
@@ -56,6 +57,52 @@ class TriageOut(BaseModel):
     threats: List[Threat] = Field(default_factory=list)
     safe_response: str = ""
     recommended_controls: List[str] = Field(default_factory=list)
+
+
+# ---------------------------
+# Terminal color helpers (ANSI)
+# ---------------------------
+
+ANSI_RESET = "\033[0m"
+ANSI_GREEN = "\033[32m"
+ANSI_YELLOW = "\033[33m"
+ANSI_RED = "\033[31m"
+ANSI_DIM = "\033[2m"
+
+
+def _supports_color() -> bool:
+    # Basic heuristic: most UNIX terminals + VSCode support ANSI.
+    # Windows Terminal / new shells usually support it too, but some legacy shells may not.
+    if os.environ.get("NO_COLOR"):
+        return False
+    if os.environ.get("TERM") in (None, "", "dumb"):
+        return False
+    return True
+
+
+def colorize(text: str, color: str) -> str:
+    if not _supports_color():
+        return text
+    return f"{color}{text}{ANSI_RESET}"
+
+
+def color_for_action(action: str) -> str:
+    a = action.strip().upper()
+    if a == "ALLOW":
+        return ANSI_GREEN
+    if a == "ALLOW_WITH_GUARDRAILS":
+        return ANSI_YELLOW
+    if a == "BLOCK":
+        return ANSI_RED
+    return ANSI_RESET
+
+
+def color_for_risk(risk_score: int) -> str:
+    if risk_score <= 25:
+        return ANSI_GREEN
+    if risk_score <= 70:
+        return ANSI_YELLOW
+    return ANSI_RED
 
 
 # ---------------------------
@@ -240,11 +287,10 @@ def run_one(
     rag_snippets = ""
     if rag:
         rag_meta = rag.retrieve(user_prompt, k=3, intent=intent, return_meta=True)  # type: ignore
-        # Only feed snippets to the LLM if retrieval is confident
         if rag_meta.confidence == "high":
             rag_snippets = "\n\n".join(rag_meta.snippets)
         else:
-            rag_snippets = ""  # prevents irrelevant sources from polluting the answer
+            rag_snippets = ""
 
     # 3) Security triage (schema must match app/prompts.py triage schema)
     triage_schema = (
@@ -268,14 +314,10 @@ def run_one(
     if action not in ("ALLOW", "ALLOW_WITH_GUARDRAILS", "BLOCK"):
         action = "ALLOW"
 
-    # Create case directory early
     case_dir = make_case_dir(out_dir, user_prompt, intent, action)
 
-    # Save intent + triage
     (case_dir / "intent.json").write_text(intent_out.model_dump_json(indent=2), encoding="utf-8")
     (case_dir / "triage.json").write_text(triage_out.model_dump_json(indent=2), encoding="utf-8")
-
-    # Save retrieval debug (good for interview explanation)
     (case_dir / "retrieval.json").write_text(
         json.dumps(
             {
@@ -300,10 +342,13 @@ def run_one(
         safe_md = "# Request Blocked\n\n" + safe + "\n"
         (case_dir / "answer.md").write_text(safe_md, encoding="utf-8")
         md_to_pdf(safe_md, case_dir / "answer.pdf", title="Blocked Request")
-        (case_dir / "answer.json").write_text(json.dumps({"blocked": True, "safe_response": safe}, indent=2), encoding="utf-8")
+        (case_dir / "answer.json").write_text(
+            json.dumps({"blocked": True, "safe_response": safe}, indent=2),
+            encoding="utf-8",
+        )
         return case_dir, intent_out, triage_out, safe_md
 
-    # 5) Generation (capstone only for ASSESSMENT_GEN)
+    # 5) Generation
     if intent == "ASSESSMENT_GEN":
         messages = build_assessment_messages(
             user_prompt,
@@ -319,22 +364,17 @@ def run_one(
 
     resp = llm.chat(messages=messages, model=model, temperature=temperature, max_tokens=max_tokens)
     answer_text = resp.text.strip()
-
-    # Save raw answer debug
     (case_dir / "answer.json").write_text(json.dumps({"text": answer_text}, indent=2), encoding="utf-8")
 
     # 6) Postprocess
     if intent == "GENERIC_QA":
-        # Only add sources if retrieval was confident & we actually used them.
         answer_text = append_sources_if_missing(answer_text, rag_meta.sources if rag_meta.confidence == "high" else [])
-
         md = "# Answer\n\n" + answer_text + "\n"
         (case_dir / "answer.md").write_text(md, encoding="utf-8")
         md_to_pdf(md, case_dir / "answer.pdf", title="Answer")
 
     if intent == "ASSESSMENT_GEN":
         artifacts = generate_assessment_artifacts(answer_text)
-
         overall_md = "# Assessment Output\n\n" + answer_text + "\n"
         (case_dir / "answer.md").write_text(overall_md, encoding="utf-8")
         md_to_pdf(overall_md, case_dir / "answer.pdf", title="Assessment Output")
@@ -368,7 +408,7 @@ def main() -> None:
             rag = LocalRAG(kb_dir=kb, max_chars=2000)
 
     print("Secure Guarded LLM Demo")
-    print("Type 'exit' to quit.\n")
+    print(colorize("Type 'exit' to quit.\n", ANSI_DIM))
 
     if args.interactive:
         while True:
@@ -392,13 +432,23 @@ def main() -> None:
                     capstone=args.capstone,
                 )
 
-                print(f"\nIntent: {intent_out.intent} (conf={intent_out.confidence:.2f})")
-                print(f"Decision: {triage_out.action} | Risk: {triage_out.risk_score}")
+                enquiry_label = "Enquiry Type"
+                decision_color = color_for_action(triage_out.action)
+                risk_color = color_for_risk(triage_out.risk_score)
 
-                # Show retrieval debug so you can explain it in interview
+                print(f"\n{enquiry_label}: {intent_out.intent} (conf={intent_out.confidence:.2f})")
+                print(
+                    "Decision: "
+                    + colorize(triage_out.action, decision_color)
+                    + " | Risk: "
+                    + colorize(str(triage_out.risk_score), risk_color)
+                )
+
+                # Retrieval debug
                 try:
                     rj = json.loads((case_dir / "retrieval.json").read_text(encoding="utf-8"))
-                    print(f"Retrieval: {rj.get('confidence')} | sources={rj.get('sources')}")
+                    retrieval_line = f"Retrieval: {rj.get('confidence')} | sources={rj.get('sources')}"
+                    print(colorize(retrieval_line, ANSI_DIM))
                 except Exception:
                     pass
 

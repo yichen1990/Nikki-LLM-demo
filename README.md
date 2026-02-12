@@ -278,6 +278,13 @@ This demonstrates:
 - Local RAG retrieval
 - Citation-aware generation
 
+## Case output
+<details>
+<img src="Output_example/Case 1/Case 1 terminal output.png" width="700">
+
+[Download PDF](Output_example/Case 1/answer.pdf)
+</details>
+
 ### Case 2 – Legitimate Academic Policy Question
 
 Input:
