@@ -179,11 +179,13 @@ In this project, local knowledge markdown includes:
 
 ```text
 knowledge_base/
-├── policy.md
+├── course_outline.md
+├── policy_ai_use.md
 ├── turnitin_guidance.md
 ├── academic_integrity.md
 ├── llm_security_notes.md
-└── course_outline.md
+├── prompt_injection_notes.md
+└── secure_rag_guidelines.md
 ```
 
 These documents may contain:
@@ -215,7 +217,7 @@ This will:
 
 - Download the source page
 - Convert it into processed Markdown
-- Store it inside knowledge_base/
+- Store it inside `knowledge_base/`
 - Make it retrievable by the RAG module
 
 ### 8.3 Security Ingestion Principles
