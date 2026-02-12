@@ -144,6 +144,25 @@ This framework is designed around four core architectural principles:
 
   The system is therefore auditable, reproducible, and evaluation-ready.
 
+---
+- **Model-Agnostic Architecture**
+
+  The framework is designed to operate independently of any specific LLM.
+
+  All control logic — including intent routing, risk triage, enforcement, and logging — is implemented at the orchestration layer rather than inside the model itself.
+
+  As a result, the system can be deployed with different instruction-following LLMs that support structured output, including:
+
+  - LLaMA-family models
+  - Qwen
+  - DeepSeek
+  - Mistral-class models
+
+  Model substitution does not affect governance logic or enforcement pathways, enabling portability across:
+
+  - local deployment environments
+  - institutional infrastructure
+  - evolving open-source model ecosystems
 
 ---
 
