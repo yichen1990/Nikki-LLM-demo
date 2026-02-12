@@ -282,9 +282,11 @@ This demonstrates:
 <details>
 <summary><strong>Case 1 — General QA (ALLOW)</strong></summary>
 <br>
-<img src="Output_example/Case 1/Case 1 terminal output.png" width="700">
+<img src="Output_example/Case_1/Case 1 terminal output.png" width="700">
 <br>
-[Download PDF](Output_example/Case%201/answer.pdf)
+
+[Click to see generated PDF](Output_example/Case_1/answer.pdf)
+
 </details>
 
 ### Case 2 – Legitimate Academic Policy Question
