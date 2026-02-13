@@ -81,7 +81,7 @@ This project is intentionally **not**:
 Instead, it focuses on **orchestration, control, and evaluation** of LLM behavior under explicit governance and security constraints. The system overviewed is shown below:
 
 <br>
-<img src="/System architecture.png" width="700">
+<img src="/System architecture.png" width="800">
 <br>
 
 ---
