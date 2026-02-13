@@ -59,23 +59,23 @@ This system introduces a multi-stage LLM pipeline integrating:
 The objective is not to demonstrate text generation capability, but to illustrate secure, policy-governed LLM orchestration suitable for institutional deployment.
 
 
-```mermaid
 flowchart LR
     A[User Query] --> B[Intent Classification]
     B --> C[Risk Triage]
+
     C -->|ALLOW| D[LLM Invocation]
-    C -->|ALLOW<br/>WITH GUARDRAILS| E[Guardrail Enforcement]
+    C -->|ALLOW WITH GUARDRAILS| E[Guardrail Enforcement]
     C -->|BLOCK| F[Safe Refusal]
 
-    D --> G[RAG Retrieval<br/>(Untrusted Data)]
-    G --> H[Structured Generation<br/>(JSON)]
+    D --> G[RAG Retrieval\n(Untrusted Data)]
+    G --> H[Structured Generation\n(JSON)]
     H --> I[Schema Validation]
-    I -->|Valid| J[Artifact Export<br/>(MD / PDF / Logs)]
+
+    I -->|Valid| J[Artifact Export\n(MD / PDF / Logs)]
     I -->|Invalid| K[Repair Prompt]
     K --> D
 
     E --> D
-```
 
 
 ---
