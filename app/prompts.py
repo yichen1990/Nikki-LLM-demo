@@ -4,7 +4,7 @@ from typing import Dict, List
 
 
 # ---------------------------
-# System prompts (split by intent)
+# System prompts 
 # ---------------------------
 
 GENERIC_QA_SYSTEM = """You are a helpful assistant.
