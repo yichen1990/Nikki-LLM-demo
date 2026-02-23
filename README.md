@@ -143,8 +143,8 @@ This framework is designed around four core architectural principles:
   Risk calibration follows a defined rubric:
 
   - 0–25 → benign informational  
-  - 35–70 → borderline misuse  
-  - 80–100 → prompt injection, data exfiltration, or private data request  
+  - 30–70 → borderline misuse  
+  - 75–100 → prompt injection, data exfiltration, or private data request  
 
   Enforcement is deterministic:
   - BLOCK skips generation
