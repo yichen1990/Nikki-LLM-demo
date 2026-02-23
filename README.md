@@ -16,11 +16,11 @@ GitHub Repository: https://github.com/yichen1990/Academic-LLM-demo
 ## This project demonstrates:
 
 
-- explicit LLM API invocation and control
-- structured JSON generation and parsing
-- follow-up processing via schema validation and repair
-- secure RAG with untrusted retrieval boundaries
-- copilot-style artifact generation for academic workflows
+- Explicit LLM API invocation and control
+- Structured JSON generation and parsing
+- Follow-up processing via schema validation and repair
+- Secure RAG with untrusted retrieval boundaries
+- Copilot-style artifact generation for academic workflows
 
 All functionality is exercised through live execution rather than static examples.
 
