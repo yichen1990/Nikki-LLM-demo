@@ -13,9 +13,8 @@ GitHub Repository: https://github.com/yichen1990/Academic-LLM-demo
 
 ---
 
-## Alignment with Demonstration Requirements
+## This project demonstrates:
 
-This project demonstrates:
 
 - explicit LLM API invocation and control
 - structured JSON generation and parsing
