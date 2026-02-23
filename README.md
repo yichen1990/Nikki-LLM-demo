@@ -72,7 +72,7 @@ This system introduces a multi-stage LLM pipeline integrating:
 - Artifact generation
 - Red-team dataset logging and evaluation
 
-The objective is not to demonstrate text generation capability, but to illustrate secure, policy-governed LLM orchestration suitable for institutional deployment.
+The objective is not to demonstrate text generation capability, but to illustrate secure, policy-governed LLM orchestration.
 
 This project is intentionally **not**:
 
@@ -81,7 +81,7 @@ This project is intentionally **not**:
 - a replacement for institutional decision-making
 - a fully autonomous agent system
 
-Instead, it focuses on **orchestration, control, and evaluation** of LLM behavior under explicit governance and security constraints. The system overviewed is shown below:
+Instead, it focuses on **orchestration, control, and evaluation** of LLM behavior under explicit governance and security constraints. The system overview is shown below:
 
 <br>
 <img src="/System_architecture.png" width="800">
