@@ -7,8 +7,6 @@ This project presents a risk-aware, agentic LLM orchestration framework for secu
 It integrates intent routing, adversarial risk triage, structured output enforcement, and automated artifact generation within a layered control architecture. 
 Unlike conventional chatbot demonstrations, the system emphasizes controlled execution, reproducibility, and measurable behavior under adversarial and policy-constrained conditions.
 
-Demo Video: https://youtu.be/CTHCmgXI-BA
-
 GitHub Repository: https://github.com/yichen1990/Academic-LLM-demo
 
 ---
